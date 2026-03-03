@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>NEONFLIX • Skipped</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body data-page="skipped_page">
+  <header class="nav">
+    <div class="brand">
+      <div class="dot"></div>
+      <div class="name">NEONFLIX</div>
+      <div class="sub">Skipped movies • Useful for “redo” + debug</div>
+    </div>
+
+    <div class="nav-actions">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/top">Top Rated</a>
+      <a class="nav-link active" href="/skipped">Skipped</a>
+      <a class="nav-link" href="/watchlist">Watchlist</a>
+
+      <button id="watchlistBtn" class="nav-pill">
+        Drawer <span id="watchlistCount" class="count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="top-hero card">
+      <div>
+        <h1>Skipped</h1>
+        <p class="muted">These are movies you swiped left. Tap any card to preview again.</p>
+      </div>
+
+      <div class="top-controls">
+        <div class="row">
+          <button id="clearSkippedBtn" class="btn danger">Clear Skipped</button>
+          <a class="btn" href="/">Back to Swipe</a>
+        </div>
+        <div class="muted small" style="margin-top:10px;">
+          This is a clean “engineered” feature for interviews: persistence + audit trail.
+        </div>
+      </div>
+    </section>
+
+    <section class="grid card">
+      <div id="skippedEmpty" class="empty hidden" style="height:auto; padding:30px 12px;">
+        <div class="empty-title">No skipped movies</div>
+        <div class="muted">Swipe left on some movies and they’ll show up here.</div>
+      </div>
+
+      <div id="skippedGrid" class="movie-grid"></div>
+    </section>
+  </main>
+
+  <!-- WATCHLIST DRAWER -->
+  <div id="drawer" class="drawer hidden" aria-hidden="true">
+    <div id="drawerBackdrop" class="drawer-backdrop"></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div class="section-title">Watchlist (Drawer)</div>
+        <button id="drawerClose" class="btn">Close</button>
+      </div>
+      <div id="watchlistItems" class="watchlist"></div>
+    </div>
+  </div>
+
+  <!-- PREVIEW MODAL -->
+  <div id="modal" class="modal hidden">
+    <div id="modalBackdrop" class="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <div id="modalTitle" class="modal-title">—</div>
+          <div id="modalMeta" class="muted small">—</div>
+        </div>
+        <button id="modalClose" class="btn">Close</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-left">
+          <img id="modalPoster" class="poster" alt="poster" />
+          <div class="badges">
+            <span id="modalLangBadge" class="badge">EN</span>
+          </div>
+
+          <div class="where-to-watch">
+            <div class="section-title">Where to watch</div>
+            <div id="providersRow" class="providers-row muted">Loading…</div>
+          </div>
+        </div>
+
+        <div class="modal-right">
+          <div class="section-title">Synopsis</div>
+          <div id="modalOverview" class="muted">—</div>
+
+          <div class="spacer"></div>
+          <div class="section-title">Trailer</div>
+          <div class="trailer">
+            <iframe id="trailerFrame" title="Trailer" allowfullscreen></iframe>
+            <div id="noTrailer" class="muted hidden">No trailer found.</div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="modalSkip" class="btn">Back</button>
+            <button id="modalLike" class="btn primary">Add to watchlist</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

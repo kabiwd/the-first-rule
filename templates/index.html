@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>The First Rule • Mood Recommender</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body data-page="home">
+  <header class="nav">
+    <div class="brand">
+      <div class="dot"></div>
+      <div class="name">The First Rule</div>
+      <div class="sub">Mood-based recommendations • Swipe to like</div>
+    </div>
+
+    <div class="nav-actions">
+      <a class="nav-link active" href="/">Home</a>
+      <a class="nav-link" href="/top">Top Rated</a>
+      <a class="nav-link" href="/skipped">Skipped</a>
+      <a class="nav-link" href="/watchlist">Watchlist</a>
+
+      <button id="watchlistBtn" class="nav-pill">
+        Drawer <span id="watchlistCount" class="count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-left">
+        <h1>What’s your mood today?</h1>
+        <p class="muted">
+          Pick a vibe + year range. Swipe through recommendations.
+          Tap a card for trailer + synopsis.
+        </p>
+      </div>
+
+      <div class="hero-right card">
+        <div class="grid2">
+          <div>
+            <label class="label">Language</label>
+            <select id="langSelect" class="select" disabled>
+              <option value="en" selected>English</option>
+            </select>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label class="label">Year from</label>
+              <input id="yearFrom" class="input" placeholder="2000" />
+            </div>
+            <div>
+              <label class="label">Year to</label>
+              <input id="yearTo" class="input" placeholder="2005" />
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <label class="label">Mood</label>
+        <div id="moodChips" class="chips"></div>
+
+        <div class="btn-row">
+          <button id="startBtn" class="btn primary">Recommend</button>
+          <button id="moreBtn" class="btn" disabled>Load more</button>
+          <button id="refillBtn" class="btn glow">Force refill</button>
+          <button id="undoBtn" class="btn">↩ Undo</button>
+          <button id="resetBtn" class="btn danger">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="explain card">
+      <div class="explain-left">
+        <div class="section-title">Explainable recommendations</div>
+        <div id="explainText" class="muted">
+          Pick a mood to see why results were chosen.
+        </div>
+      </div>
+      <div class="explain-right">
+        <div class="pill">Drag</div>
+        <div class="muted small">or</div>
+        <div class="pill">Use buttons</div>
+      </div>
+    </section>
+
+    <section class="stage-row">
+      <div class="stage card">
+        <div class="stage-head">
+          <div class="section-title">Swipe Stack</div>
+          <div class="muted small">Right = Like • Left = Skip • Tap = Preview</div>
+        </div>
+
+        <div id="cardStage" class="card-stage">
+          <div id="emptyState" class="empty">
+            <div class="empty-title">No movies yet</div>
+            <div class="muted">Choose a mood + hit “Recommend”.</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="skipBtn" class="btn danger">Skip</button>
+          <button id="previewBtn" class="btn">Preview</button>
+          <button id="likeBtn" class="btn primary">Like</button>
+        </div>
+      </div>
+
+      <aside class="side card">
+        <div class="section-title">Now Showing</div>
+        <div class="kv">
+          <div class="k">Queue</div><div id="queueMeta" class="v">0</div>
+          <div class="k">Selected Mood</div><div id="statMood" class="v">—</div>
+          <div class="k">Language</div><div id="statLang" class="v">English</div>
+          <div class="k">Year Range</div><div id="statYear" class="v">—</div>
+          <div class="k">Page Loaded</div><div id="statPage" class="v">1 / 1</div>
+        </div>
+
+        <div class="mini card-inner">
+          <div class="section-title">Taste learning</div>
+          <p class="muted">
+            Likes build a lightweight “taste profile” (genres). Future recommendations blend mood + taste.
+            Undo is supported.
+          </p>
+        </div>
+
+        <div class="mini card-inner">
+          <div class="section-title">Taste DNA</div>
+          <div id="tasteDNA" class="muted small">No data yet — like a few movies.</div>
+        </div>
+
+        <a class="link" href="/top">Explore Top Rated →</a>
+      </aside>
+    </section>
+  </main>
+
+  <!-- WATCHLIST DRAWER -->
+  <div id="drawer" class="drawer hidden" aria-hidden="true">
+    <div id="drawerBackdrop" class="drawer-backdrop"></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div class="section-title">Watchlist</div>
+        <button id="drawerClose" class="btn">Close</button>
+      </div>
+      <div id="watchlistItems" class="watchlist"></div>
+    </div>
+  </div>
+
+  <!-- PREVIEW MODAL -->
+  <div id="modal" class="modal hidden">
+    <div id="modalBackdrop" class="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <div id="modalTitle" class="modal-title">—</div>
+          <div id="modalMeta" class="muted small">—</div>
+        </div>
+        <button id="modalClose" class="btn">Close</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-left">
+          <img id="modalPoster" class="poster" alt="poster" />
+          <div class="badges">
+            <span id="modalLangBadge" class="badge">EN</span>
+          </div>
+
+          <div class="where-to-watch">
+            <div class="section-title">Where to watch</div>
+            <div id="providersRow" class="providers-row muted">Loading…</div>
+          </div>
+        </div>
+
+        <div class="modal-right">
+          <div class="section-title">Synopsis</div>
+          <div id="modalOverview" class="muted">—</div>
+
+          <div class="spacer"></div>
+          <div class="section-title">Trailer</div>
+          <div class="trailer">
+            <iframe id="trailerFrame" title="Trailer" allowfullscreen></iframe>
+            <div id="noTrailer" class="muted hidden">No trailer found.</div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="modalSkip" class="btn">Back</button>
+            <button id="modalLike" class="btn primary">Add to watchlist</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
