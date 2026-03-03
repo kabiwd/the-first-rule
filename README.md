@@ -38,16 +38,17 @@ A Flask-based movie recommendation web app that suggests movies based on user mo
 ## Environment Variable
 - `TMDB_API_KEY`
 
+
 ## Screenshots
 
 ### Home Dashboard
-![Home Dashboard](screenshots/home-dashboard.png)
+![Home Dashboard](screenshots/home-dashboard.png.png)
 
 ### Swipe Recommendation
-![Swipe Recommendation](screenshots/swipe-recommendation.png)
+![Swipe Recommendation](screenshots/swipe-recommendation.png.png)
 
 ### Movie Preview Modal
-![Movie Preview Modal](screenshots/movie-preview-modal.png)
+![Movie Preview Modal](screenshots/movie-preview-modal.png.png)
 
 ### Watchlist
-![Watchlist](screenshots/watchlist-page.png)
+![Watchlist](screenshots/watchlist-page.png.png)
